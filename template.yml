@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+  
+Parameters:
+  AdministratorEmailAddress:
+    Type: String
+    Description: Administrator Email Address
+
+Resources:
+  ValidateAccountDataFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: .
+      Handler: validate.handler
+      Runtime: nodejs12.x
+
+  AccountTable:
+    Type: AWS::Serverless::SimpleTable
+  
+  NotificationSNSTopic:
+    Type: AWS::SNS::Topic
+
+  NotificationSNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties: 
+      Endpoint: !Ref AdministratorEmailAddress
+      Protocol: email
+      TopicArn: !Ref NotificationSNSTopic
